@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInputHandler
+public static class GnetBase
 {
-    void Push(IoMap io);
-
-    IoMap Poll();
+    public const int PROTOCOL_ID = 73629579;
 }

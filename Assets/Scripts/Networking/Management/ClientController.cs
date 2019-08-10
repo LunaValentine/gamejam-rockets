@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NetController : MonoBehaviour
+public class ClientController : MonoBehaviour
 {
+    public int Port;
+    public string Ip;
     // Start is called before the first frame update
     void Start()
     {

@@ -17,6 +17,16 @@ public class MyBitStream
         buffer = new byte[size];
     }
 
+    public int BufferLength()
+    {
+        return buffer.Length;
+    }
+
+    public byte[] GetUnderlyingArray()
+    {
+        return buffer;
+    }
+
     //The Easy way, Probably will update this to be more efficient with the middle Bytes
     public void PackInt(int number)
     {
