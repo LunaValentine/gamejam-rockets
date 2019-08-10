@@ -9,10 +9,10 @@ public class NetBehaviour : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        if (ServerController.Instance == null)
+        /*if (ServerController.Instance == null)
         {
             enabled = false;
-        }
+        }*/
     }
 
     // Start is called before the first frame update
