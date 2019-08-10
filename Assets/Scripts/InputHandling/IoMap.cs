@@ -2,30 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IoMap
+public struct IoMap
 {
-    bool A;
-    bool B;
-    bool X;
-    bool Y;
-    bool Select;
-    bool Start;
-    bool LB;
-    bool RB;
+    public bool A;
+    public bool B;
+    public bool X;
+    public bool Y;
+    public bool Select;
+    public bool Start;
+    public bool LB;
+    public bool RB;
 
-    bool Left;
-    bool Right;
-    bool Up;
-    bool Down;
+    public bool Left;
+    public bool Right;
+    public bool Up;
+    public bool Down;
 
-    bool LeftStick;
-    bool RightStick;
+    public bool LeftStick;
+    public bool RightStick;
 
-    float Axis1;
-    float Axis2;
-    float Axis3;
-    float Axis4;
+    public float LeftAxisVertical;
+    public float LeftAxisHorizontal;
+    public float RightAxisVertical;
+    public float RightAxisHorizontal;
 
-    float LT;
-    float RT;
+    public float LT;
+    public float RT;
 }

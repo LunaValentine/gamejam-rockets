@@ -21,7 +21,12 @@ public class InputHandler : MonoBehaviour
         {
             var map = new IoMap();
 
-            //Fill out the IoMap
+            map.LeftAxisVertical = Input.GetAxis("Vertical");
+            map.LeftAxisHorizontal = Input.GetAxis("Horizontal");
+            map.A = Input.GetButton("Fire1");
+            map.B = Input.GetButton("Fire2");
+
+            //Debug.Log(Input.GetButton("Fire2"));
 
             if(NoNetwork)
             {
