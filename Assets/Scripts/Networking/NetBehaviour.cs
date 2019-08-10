@@ -4,20 +4,27 @@ using UnityEngine;
 
 public class NetBehaviour : MonoBehaviour
 {
-    Vector3 Velocity { get; set; }
-
     // Use this for initialization
     void Awake()
     {
-        /*if (ServerController.Instance == null)
+        if (ServerController.Instance == null)
         {
             enabled = false;
-        }*/
+        }
+        else
+        {
+            gameObject.AddComponent<NetSync>();
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
         
+    }
+
+    private void FixedUpdate()
+    {
+    
     }
 }
