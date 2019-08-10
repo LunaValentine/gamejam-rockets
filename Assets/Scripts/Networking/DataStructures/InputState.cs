@@ -21,14 +21,14 @@ public struct MoveSet
     public MoveSet(MyBitStream stream)
     {
         //UnpackBools too
-        Up = stream.GetBool();
-        Right = stream.GetBool();
-        Down = stream.GetBool();
-        Left = stream.GetBool();
-        Jump = stream.GetBool();
+        Up = stream.ReadBool();
+        Right = stream.ReadBool();
+        Down = stream.ReadBool();
+        Left = stream.ReadBool();
+        Jump = stream.ReadBool();
 
-        MouseX = stream.ReadInt();
-        MouseY = stream.ReadInt();
+        MouseX = (short)stream.ReadInt();
+        MouseY = (short)stream.ReadInt();
     }
 
     public MoveSet(bool bUp, bool bRight, bool bDown, bool bLeft, bool bJump, short mouseX, short mouseY)

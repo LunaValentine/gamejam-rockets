@@ -12,7 +12,7 @@ public struct NetBState
     {
         Position = pos;
         Rotation = rot;
-        Velocity = Vector3.Zero;
+        Velocity = Vector3.zero;
     }
 
     public NetBState(Vector3 pos, Quaternion rot, Vector3 vel)
