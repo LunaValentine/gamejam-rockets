@@ -12,17 +12,23 @@ public class RocketCar : MonoBehaviour
     public float rotationStrength = 10;
     float rotationThisFrame;
 
+    public InputHandler myInputHandler;
+
     private void FixedUpdate()
     {
         //Get input this frame
-        float moveForward = Input.GetAxis("Vertical");
-        float moveRight = Input.GetAxis("Horizontal");
-        float throttle = Input.GetAxis("Throttle");
-        
+        //float moveForward = Input.GetAxis("Vertical");
+        //float moveRight = Input.GetAxis("Horizontal");
+        //float throttle = Input.GetAxis("Throttle");
+        var inputBuffer = myInputHandler.Poll();
+
+        float moveForward = inputBuffer.LeftAxisVertical;
+        float moveRight = inputBuffer.LeftAxisHorizontal;
+        float throttle = inputBuffer.RT;
 
         //Adjust speed or swap to braking behaviour
         //TODO: Add a hard brake function for when player is hitting reverse throttle while moving forward and vice versa
-        if(throttle!=0)
+        if (throttle!=0)
         {
             Accelerate(throttle);
         }
