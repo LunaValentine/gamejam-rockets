@@ -26,6 +26,11 @@ public class GnetServer : MonoBehaviour
         ListenerClient = new UdpClient(ListenPort);
     }
 
+    void FixedUpdate()
+    {
+        ReceiveAll();
+    }
+
     public void ReceiveAll()
     {
         while (ListenerClient.Available > 0)
@@ -96,9 +101,15 @@ public class GnetServer : MonoBehaviour
         //Last thing acked? = BitConverter.ToUInt32(message, 8);
 
         //TODO process the actual Input
-        byte[] buffer = new byte[IoMap.Size];
-        Buffer.BlockCopy(message, 12, buffer, 0, IoMap.Size);
-        PlayerInput[endpoint].Push(new IoMap(buffer));
+        byte[] map = new byte[IoMap.Size];
+        Buffer.BlockCopy(message, 12, map, 0, IoMap.Size);
+
+        Debug.Log(map[0] + " " + map[1] + " " + map[2] + " " + map[3] + " " + map[4] + " " + map[5] + " " + map[6] + " " + map[7] + " " +
+            map[8] + " " + map[9] + " " + map[10] + " " + map[11] + " " + map[12] + " " + map[13] + " " + map[14] + " " + map[15] + " " +
+            map[16] + " " + map[17] + " " + map[18] + " " + map[19] + " " + map[20] + " " + map[21] + " " + map[22] + " " + map[23] + " " +
+            map[24] + " " + map[25]);
+
+        PlayerInput[endpoint].Push(new IoMap(map));
 
         //Push to Associated InputHandler
     }
