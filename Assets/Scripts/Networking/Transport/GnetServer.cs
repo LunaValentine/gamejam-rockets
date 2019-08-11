@@ -104,8 +104,7 @@ public class GnetServer : MonoBehaviour
 
         //Last thing acked? = BitConverter.ToUInt32(message, 8);
 
-        //TODO process the actual Input
-        byte[] map = new byte[IoMap.Size];
+        /*byte[] map = new byte[IoMap.Size];
         Buffer.BlockCopy(message, 12, map, 0, IoMap.Size);
 
         Debug.Log(map[0] + " " + map[1] + " " + map[2] + " " + map[3] + " " + map[4] + " " + map[5] + " " + map[6] + " " + map[7] + " " +
@@ -114,6 +113,7 @@ public class GnetServer : MonoBehaviour
             map[24] + " " + map[25]);
 
         PlayerInput[endpoint].Push(new IoMap(map));
+        */
 
         //Push to Associated InputHandler
     }
