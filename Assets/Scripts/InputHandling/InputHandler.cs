@@ -6,7 +6,7 @@ public class InputHandler : MonoBehaviour
 {
     private IoMap _playerBuffer;
     public bool NoNetwork;
-    public GnetClient client;
+    public GnetClient client = null;
 
     //If Client Controller exists and is enabled then we need to send input to server
 
