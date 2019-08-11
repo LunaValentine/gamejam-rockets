@@ -17,6 +17,11 @@ public class MyBitStream
         buffer = new byte[size];
     }
 
+    public MyBitStream(byte[] buff)
+    {
+        buffer = buff;
+    }
+
     public int BufferLength()
     {
         return buffer.Length;
@@ -41,6 +46,21 @@ public class MyBitStream
     {
         byte[] bytes = ReadBytes(4);
         return BitConverter.ToInt32(bytes, 0);
+    }
+
+    public void PackFloat(float number)
+    {
+        byte[] bytes = BitConverter.GetBytes(number);
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            PackByte(bytes[i]);
+        }
+    }
+
+    public float ReadFloat()
+    {
+        byte[] bytes = ReadBytes(4);
+        return BitConverter.ToSingle(bytes, 0);
     }
 
     public byte[] ReadBytes(int number)

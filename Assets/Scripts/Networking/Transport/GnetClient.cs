@@ -8,69 +8,72 @@ using UnityEngine;
 
 class GnetClient : MonoBehaviour
 {
-    //0Protocol_Id, 4MessageNum, 8Acks
-    int HeaderSize = 12;
+    [Header("IP info (only available when not running)")]
     public int ServerPort;
     public string ServerIp;
 
-    public uint LastReceived = 0;
+    private IPEndPoint endpoint;
 
-    static UdpClient ListenerClient;
+    private UdpClient ListenerClient;
 
     public Action<EndPoint> NewConnectionReceived;
 
     public int ListenPort = 26234;
     public uint PacketNumber = 0;
 
-    private byte[] message = new byte[1000];
+    private byte[] message = new byte[IoMap.Size + GnetBase.HeaderSize];
     private int messageIndex = 0;
+    public uint LastReceived = 0;
 
     public GnetClient()
     {
-        //ListenerClient = new UdpClient(ListenPort, ServerIp);
+        ListenerClient = new UdpClient(ListenPort);
+        endpoint = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
     }
 
     public void ReceiveAll()
     {
-        /*while (ListenerClient.Available > 0)
+        while (ListenerClient.Available > 0)
         {
-            IPEndPoint endpoint = new IPEndPoint(new IPAddress(ServerIp), 0);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
             Byte[] message = ListenerClient.Receive(ref endpoint);
 
             //This is one of ours
-            if (BitConverter.ToUInt32(message, 0) == GnetBase.PROTOCOL_ID)
+            if (BitConverter.ToUInt32(message, 0) == GnetBase.PROTOCOL_ID && ep == endpoint)
             {
                 uint packetNumber = BitConverter.ToUInt32(message, 4);
 
-                //Is this a new connection?
-                if (!EndpointLastReceived.ContainsKey(endpoint))
-                {
-                    EndpointLastReceived.Add(endpoint, packetNumber - 1);
-                    if (NewConnectionReceived != null)
-                        NewConnectionReceived(endpoint);
-                }
+                //If the message is more recent than the last we received then we should use it....
 
-                //If the message is more recent than the last we received then we should use it.... Duplicate last input from client
-                if (SequenceMoreRecent(BitConverter.ToUInt32(message, 4), EndpointLastReceived[endpoint]))
-                    Receive(endpoint, message);
+
+
+
+                //TODO This is WRONG
+                //what the server does... not client
+                if (SequenceMoreRecent(BitConverter.ToUInt32(message, 4), LastReceived))
+                {
+                    byte[] buffer = new byte[message.Length - GnetBase.HeaderSize];
+                    Buffer.BlockCopy(message, GnetBase.HeaderSize, buffer, 0, buffer.Length);
+                    var map = new IoMap(buffer);
+                }
             }
-        }*/
+        }
     }
 
-    public void SendPackets()
+    public void Send(byte[] messageContents)
     {
-        /*foreach (KeyValuePair<IPEndPoint, uint> KV in EndpointLastReceived)
-        {
-            //Add the last received to the packet before sending
-            Buffer.BlockCopy(BitConverter.GetBytes(KV.Value), 0, message, 8, 4);
+        //0Protocol_Id, 4MessageNum, 8Acks
+        //Protocol_ID
+        Buffer.BlockCopy(GnetBase.PROTOCOL_ID, 0, message, 0, 4);
+        //PacketNumber
+        Buffer.BlockCopy(PacketNumber, 0, message, 4, 4);
+        //LastReceived
+        Buffer.BlockCopy(LastReceived, 0, message, 8, 4);
 
-            ListenerClient.Send(message, messageIndex, KV.Key);
-        }
-        //Wipe the message buffer, start the index over, and increase the packetNumber
-        message.Initialize();
-        messageIndex = 0;
-        PacketNumber++;
-        */
+        //Then the messageContents
+        Buffer.BlockCopy(messageContents, 0, message, 12, messageContents.Length);
+
+        ListenerClient.Send(message, message.Length);
     }
 
     public void Close()
@@ -95,6 +98,9 @@ class GnetClient : MonoBehaviour
     public void Push(IoMap io)
     {
         //Pack the IoMap
+        byte[] map = io.Pack();
+
         //Send the Packet
+        Send(map);
     }
 }

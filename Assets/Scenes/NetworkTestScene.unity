@@ -306,6 +306,8 @@ GameObject:
   - component: {fileID: 1705778348}
   - component: {fileID: 1705778347}
   - component: {fileID: 1705778350}
+  - component: {fileID: 1705778352}
+  - component: {fileID: 1705778351}
   m_Layer: 0
   m_Name: NetworkObject
   m_TagString: Untagged
@@ -368,6 +370,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NoNetwork: 1
   client: {fileID: 0}
+--- !u!114 &1705778351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705778346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d39c8aa38df7824b9ea318001350f00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ListenPort: 26234
+  PacketNumber: 0
+--- !u!114 &1705778352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705778346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa27f73ebd36d94a9a0ea1f2dab30b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ServerPort: 0
+  ServerIp: 192.168.1.42
+  ListenPort: 26234
+  PacketNumber: 0
+  LastReceived: 0
 --- !u!1 &1889727582
 GameObject:
   m_ObjectHideFlags: 0

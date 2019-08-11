@@ -8,12 +8,9 @@ using UnityEngine;
 
 class GnetServer : MonoBehaviour
 {
-    //0Protocol_Id, 4MessageNum, 8Acks
-    int HeaderSize = 12;
-
     public Dictionary<IPEndPoint, uint> EndpointLastReceived = new Dictionary<IPEndPoint, uint>();
 
-    static UdpClient ListenerClient;
+    private UdpClient ListenerClient;
 
     public Action<EndPoint> NewConnectionReceived;
 
@@ -63,8 +60,8 @@ class GnetServer : MonoBehaviour
 
     public void StartPacket(MyBitStream stream)
     {
-        byte[] message = new byte[stream.BufferLength() + HeaderSize];
-        Buffer.BlockCopy(stream.GetUnderlyingArray(), 0, message, HeaderSize, stream.BufferLength());
+        byte[] message = new byte[stream.BufferLength() + GnetBase.HeaderSize];
+        Buffer.BlockCopy(stream.GetUnderlyingArray(), 0, message, GnetBase.HeaderSize, stream.BufferLength());
         Buffer.BlockCopy(BitConverter.GetBytes(GnetBase.PROTOCOL_ID), 0, message, 0, 4);
         Buffer.BlockCopy(BitConverter.GetBytes(PacketNumber), 0, message, 4, 4);
     }
