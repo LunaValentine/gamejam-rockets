@@ -16,6 +16,6 @@ public class DumbyPlayer : MonoBehaviour
     {
         var inputBuffer = Io.Poll();
 
-        transform.position += new Vector3(inputBuffer.LeftAxisVertical * Time.deltaTime, inputBuffer.LeftAxisHorizontal * Time.deltaTime, 0);
+        transform.position += new Vector3(inputBuffer.LeftAxisHorizontal * Time.deltaTime, inputBuffer.LeftAxisVertical * Time.deltaTime, 0);
     }
 }

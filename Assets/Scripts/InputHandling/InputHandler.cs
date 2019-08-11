@@ -32,8 +32,6 @@ public class InputHandler : MonoBehaviour
             map.A = Input.GetButton("Fire1");
             map.B = Input.GetButton("Fire2");
 
-            //Debug.Log(Input.GetButton("Fire2"));
-
             if(NoNetwork)
             {
                 Push(map);
