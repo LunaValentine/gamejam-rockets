@@ -13,14 +13,14 @@ public abstract class NetBehaviour : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        if (ServerController.Instance == null)
+        /* (ServerController.Instance == null)
         {
             enabled = false;
         }
         else
         {
             gameObject.AddComponent<NetSync>();
-        }
+        }*/
     }
 
     // Start is called before the first frame update
