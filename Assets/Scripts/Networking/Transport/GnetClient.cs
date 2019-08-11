@@ -6,74 +6,89 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-class GnetClient : MonoBehaviour
+public class GnetClient : MonoBehaviour
 {
-    //0Protocol_Id, 4MessageNum, 8Acks
-    int HeaderSize = 12;
+    private static GnetClient _instance;
+    public static GnetClient Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = UnityEngine.Object.FindObjectOfType<GnetClient>();
+            }
+            return _instance;
+        }
+    }
+
+    public GameObject PlayerPrefab;
+
+    [Header("IP info (only available when not running)")]
     public int ServerPort;
     public string ServerIp;
 
-    public uint LastReceived = 0;
+    private IPEndPoint endpoint;
 
-    static UdpClient ListenerClient;
+    private UdpClient ListenerClient;
 
     public Action<EndPoint> NewConnectionReceived;
 
     public int ListenPort = 26234;
     public uint PacketNumber = 0;
 
-    private byte[] message = new byte[1000];
-    private int messageIndex = 0;
+    private byte[] message = new byte[IoMap.Size + GnetBase.HeaderSize];
+    public uint LastReceived = 0;
 
-    public GnetClient()
+    void OnEnable()
     {
-        //ListenerClient = new UdpClient(ListenPort, ServerIp);
+        ListenerClient = new UdpClient(ListenPort);
+        endpoint = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
+
+        //Create a player
+        Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
     public void ReceiveAll()
     {
-        /*while (ListenerClient.Available > 0)
+        while (ListenerClient.Available > 0)
         {
-            IPEndPoint endpoint = new IPEndPoint(new IPAddress(ServerIp), 0);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
             Byte[] message = ListenerClient.Receive(ref endpoint);
 
             //This is one of ours
-            if (BitConverter.ToUInt32(message, 0) == GnetBase.PROTOCOL_ID)
+            if (BitConverter.ToUInt32(message, 0) == GnetBase.PROTOCOL_ID && ep == endpoint)
             {
                 uint packetNumber = BitConverter.ToUInt32(message, 4);
 
-                //Is this a new connection?
-                if (!EndpointLastReceived.ContainsKey(endpoint))
-                {
-                    EndpointLastReceived.Add(endpoint, packetNumber - 1);
-                    if (NewConnectionReceived != null)
-                        NewConnectionReceived(endpoint);
-                }
-
-                //If the message is more recent than the last we received then we should use it.... Duplicate last input from client
-                if (SequenceMoreRecent(BitConverter.ToUInt32(message, 4), EndpointLastReceived[endpoint]))
-                    Receive(endpoint, message);
+                
             }
-        }*/
-    }
-
-    public void SendPackets()
-    {
-        /*foreach (KeyValuePair<IPEndPoint, uint> KV in EndpointLastReceived)
-        {
-            //Add the last received to the packet before sending
-            Buffer.BlockCopy(BitConverter.GetBytes(KV.Value), 0, message, 8, 4);
-
-            ListenerClient.Send(message, messageIndex, KV.Key);
         }
-        //Wipe the message buffer, start the index over, and increase the packetNumber
-        message.Initialize();
-        messageIndex = 0;
-        PacketNumber++;
-        */
     }
 
-    public void Close()
+    public void Send(byte[] messageContents)
+    {
+        //0Protocol_Id, 4MessageNum, 8Acks
+        //Protocol_ID
+        Buffer.BlockCopy(BitConverter.GetBytes(GnetBase.PROTOCOL_ID), 0, message, 0, 4);
+        //PacketNumber
+        Buffer.BlockCopy(BitConverter.GetBytes(PacketNumber), 0, message, 4, 4);
+        //LastReceived
+        Buffer.BlockCopy(BitConverter.GetBytes(LastReceived), 0, message, 8, 4);
+
+        //Then the messageContents
+        Buffer.BlockCopy(messageContents, 0, message, 12, messageContents.Length);
+        Debug.Log(message[0] + " " + message[1] + " " + message[2] + " " + message[3] + " " + message[4] + " " + message[5] + " " + message[6] + " " + message[7] + " " +
+            message[8] + " " + message[9] + " " + message[10] + " " + message[11] + " " + message[12] + " " + message[13] + " " + message[14] + " " + message[15] + " " +
+            message[16] + " " + message[17] + " " + message[18] + " " + message[19] + " " + message[20] + " " + message[21] + " " + message[22] + " " + message[23] + " " +
+            message[24] + " " + message[25]);
+
+        ListenerClient.Send(message, message.Length, endpoint);
+        message = new byte[IoMap.Size + GnetBase.HeaderSize];
+
+        PacketNumber++;
+    }
+
+    public void OnDisable()
     {
         //Send TearDown to All EndPoints
         ListenerClient.Close();
@@ -95,6 +110,14 @@ class GnetClient : MonoBehaviour
     public void Push(IoMap io)
     {
         //Pack the IoMap
+        byte[] map = io.Pack();
+        /*Debug.Log(map[0] + " " + map[1] + " " + map[2] + " " + map[3]+ " " + map[4] + " " + map[5] + " " + map[6] + " " + map[7] + " " +
+            map[8] + " " + map[9] + " " + map[10] + " " + map[11] + " " + map[12] + " " + map[13] + " " + map[14] + " " + map[15] + " " +
+            map[16] + " " + map[17] + " " + map[18] + " " + map[19] + " " + map[20] + " " + map[21] + " " + map[22] + " " + map[23] + " " +
+            map[24] + " " + map[25]);
+            */
+
         //Send the Packet
+        Send(map);
     }
 }

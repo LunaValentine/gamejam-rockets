@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    private IoMap _playerBuffer;
+    public IoMap _playerBuffer;
+    public int gotInput = 0;
     public bool NoNetwork;
-    public ClientController client;
+    public GnetClient client = null;
 
     //If Client Controller exists and is enabled then we need to send input to server
 
@@ -14,19 +15,23 @@ public class InputHandler : MonoBehaviour
 
     //This is where we take the Input from the InputManager and map it to the DataStructure
 
+    void OnEnable()
+    {
+        client = GnetClient.Instance;
+    }
+
     void FixedUpdate()
     {
         //If we are server do nothing
-        if(client != null || NoNetwork)
+        if((client != null && client.enabled) || NoNetwork)
         {
             var map = new IoMap();
 
+            map.RT = Input.GetAxis("Throttle");
             map.LeftAxisVertical = Input.GetAxis("Vertical");
             map.LeftAxisHorizontal = Input.GetAxis("Horizontal");
             map.A = Input.GetButton("Fire1");
             map.B = Input.GetButton("Fire2");
-
-            //Debug.Log(Input.GetButton("Fire2"));
 
             if(NoNetwork)
             {
@@ -34,7 +39,7 @@ public class InputHandler : MonoBehaviour
             }
             else
             {
-                //If client then send to server
+                client.Push(map);
             }
         }
     }
@@ -42,6 +47,7 @@ public class InputHandler : MonoBehaviour
     public void Push(IoMap map)
     {
         _playerBuffer = map;
+        gotInput++;
     }
 
     public IoMap Poll()

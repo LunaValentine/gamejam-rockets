@@ -120,6 +120,85 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &137683815
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8604194066167440758, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerNetTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440752, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440756, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: Server
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8604194066167440759, guid: cbebb4a06deecaf4a8266692e7a9507d,
+        type: 3}
+      propertyPath: NoNetwork
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cbebb4a06deecaf4a8266692e7a9507d, type: 3}
 --- !u!1 &1073084438
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,7 +384,6 @@ GameObject:
   - component: {fileID: 1705778349}
   - component: {fileID: 1705778348}
   - component: {fileID: 1705778347}
-  - component: {fileID: 1705778350}
   m_Layer: 0
   m_Name: NetworkObject
   m_TagString: Untagged
@@ -322,11 +400,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1705778346}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e22b2d979a83f04692ff123527c460c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0aa27f73ebd36d94a9a0ea1f2dab30b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Port: 4444
-  Ip: 192.168.1.50
+  PlayerPrefab: {fileID: 8604194066167440758, guid: cbebb4a06deecaf4a8266692e7a9507d,
+    type: 3}
+  ServerPort: 26234
+  ServerIp: 192.168.1.42
+  ListenPort: 26234
+  PacketNumber: 0
+  LastReceived: 0
 --- !u!114 &1705778348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,12 +417,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705778346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae7ec44c08d2ef14dab6fe1164e6d715, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d39c8aa38df7824b9ea318001350f00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Port: 4444
+  PlayerPrefab: {fileID: 8604194066167440758, guid: cbebb4a06deecaf4a8266692e7a9507d,
+    type: 3}
+  ListenPort: 26234
+  PacketNumber: 0
 --- !u!4 &1705778349
 Transform:
   m_ObjectHideFlags: 0
@@ -354,20 +440,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1705778350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1705778346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 340198dbd7a7a2047becf68dc64eade6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NoNetwork: 1
-  client: {fileID: 0}
 --- !u!1 &1889727582
 GameObject:
   m_ObjectHideFlags: 0

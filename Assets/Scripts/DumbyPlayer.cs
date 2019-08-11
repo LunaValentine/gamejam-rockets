@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DumbyPlayer : MonoBehaviour
+public class DumbyPlayer : NetBehaviour
 {
     public InputHandler Io;
     // Start is called before the first frame update
@@ -11,11 +11,10 @@ public class DumbyPlayer : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void ServerFixedUpdate()
     {
         var inputBuffer = Io.Poll();
 
-        transform.position += new Vector3(inputBuffer.LeftAxisVertical * Time.deltaTime, inputBuffer.LeftAxisHorizontal * Time.deltaTime, 0);
+        transform.position += new Vector3(inputBuffer.LeftAxisHorizontal * Time.deltaTime, inputBuffer.LeftAxisVertical * Time.deltaTime, 0);
     }
 }

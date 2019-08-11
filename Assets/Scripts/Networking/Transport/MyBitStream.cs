@@ -17,6 +17,13 @@ public class MyBitStream
         buffer = new byte[size];
     }
 
+    public MyBitStream(byte[] buff, int index = 0)
+    {
+        buffer = buff;
+        writeByteIndex = index;
+        byteIndex = index;
+    }
+
     public int BufferLength()
     {
         return buffer.Length;
@@ -43,6 +50,46 @@ public class MyBitStream
         return BitConverter.ToInt32(bytes, 0);
     }
 
+    public void PackFloat(float number)
+    {
+        byte[] bytes = BitConverter.GetBytes(number);
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            PackByte(bytes[i]);
+        }
+    }
+
+    public float ReadFloat()
+    {
+        byte[] bytes = ReadBytes(4);
+        return BitConverter.ToSingle(bytes, 0);
+    }
+
+    public void PackVector3(Vector3 vect)
+    {
+        PackFloat(vect.x);
+        PackFloat(vect.y);
+        PackFloat(vect.z);
+    }
+
+    public Vector3 ReadVector3()
+    {
+        return new Vector3(ReadFloat(), ReadFloat(), ReadFloat());
+    }
+
+    public void PackQuaternion(Quaternion quat)
+    {
+        PackFloat(quat.x);
+        PackFloat(quat.y);
+        PackFloat(quat.z);
+        PackFloat(quat.w);
+    }
+
+    public Quaternion ReadQuaternion()
+    {
+        return new Quaternion(ReadFloat(), ReadFloat(), ReadFloat(), ReadFloat());
+    }
+
     public byte[] ReadBytes(int number)
     {
         byte[] bytes = new byte[number];
@@ -60,13 +107,13 @@ public class MyBitStream
         int InvertMask = (Mask * -1 - 1);
 
         //First part of the byte
-        int num = (buffer[byteIndex] & InvertMask);
-        toReturn = (byte)((buffer[byteIndex] & InvertMask) >> bitIndex);
+        int num = (buffer[byteIndex] & Mask);
+        toReturn = (byte)((buffer[byteIndex] & Mask) >> bitIndex);
 
         byteIndex++;
 
         //Second Part
-        toReturn += (byte)((buffer[byteIndex] & Mask) >> (8 - bitIndex));
+        toReturn += (byte)((buffer[byteIndex] & InvertMask) >> (8 - bitIndex));
 
         return toReturn;
     }
