@@ -22,7 +22,7 @@ public class InputHandler : MonoBehaviour
     void FixedUpdate()
     {
         //If we are server do nothing
-        if(client != null || NoNetwork)
+        if((client != null && client.enabled) || NoNetwork)
         {
             var map = new IoMap();
 
