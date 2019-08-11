@@ -97,14 +97,10 @@ public class GnetServer : MonoBehaviour
     public void Receive(IPEndPoint endpoint, Byte[] message)
     {
         EndpointLastReceived[endpoint] = BitConverter.ToUInt32(message, 4);
-        Debug.Log(message[0] + " " + message[1] + " " + message[2] + " " + message[3] + " " + message[4] + " " + message[5] + " " + message[6] + " " + message[7] + " " +
-            message[8] + " " + message[9] + " " + message[10] + " " + message[11] + " " + message[12] + " " + message[13] + " " + message[14] + " " + message[15] + " " +
-            message[16] + " " + message[17] + " " + message[18] + " " + message[19] + " " + message[20] + " " + message[21] + " " + message[22] + " " + message[23] + " " +
-            message[24] + " " + message[25]);
 
         //Last thing acked? = BitConverter.ToUInt32(message, 8);
 
-        /*byte[] map = new byte[IoMap.Size];
+        byte[] map = new byte[IoMap.Size];
         Buffer.BlockCopy(message, 12, map, 0, IoMap.Size);
 
         Debug.Log(map[0] + " " + map[1] + " " + map[2] + " " + map[3] + " " + map[4] + " " + map[5] + " " + map[6] + " " + map[7] + " " +
@@ -112,10 +108,8 @@ public class GnetServer : MonoBehaviour
             map[16] + " " + map[17] + " " + map[18] + " " + map[19] + " " + map[20] + " " + map[21] + " " + map[22] + " " + map[23] + " " +
             map[24] + " " + map[25]);
 
-        PlayerInput[endpoint].Push(new IoMap(map));
-        */
-
         //Push to Associated InputHandler
+        PlayerInput[endpoint].Push(new IoMap(map));
     }
 
     bool SequenceMoreRecent(uint s1, uint s2)

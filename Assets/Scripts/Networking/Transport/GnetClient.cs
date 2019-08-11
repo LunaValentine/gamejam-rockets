@@ -96,6 +96,8 @@ public class GnetClient : MonoBehaviour
 
         ListenerClient.Send(message, message.Length, endpoint);
         message = new byte[IoMap.Size + GnetBase.HeaderSize];
+
+        PacketNumber++;
     }
 
     public void OnDisable()
