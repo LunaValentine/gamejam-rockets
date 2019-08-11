@@ -90,7 +90,7 @@ public class GnetClient : MonoBehaviour
         //Then the messageContents
         Buffer.BlockCopy(messageContents, 0, message, 12, messageContents.Length);
 
-        //ListenerClient.Send(message, message.Length, endpoint);
+        ListenerClient.Send(message, message.Length, endpoint);
     }
 
     public void OnDisable()
