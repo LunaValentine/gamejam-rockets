@@ -27,6 +27,7 @@ public class InputHandler : MonoBehaviour
         {
             var map = new IoMap();
 
+            map.RT = Input.GetAxis("Throttle");
             map.LeftAxisVertical = Input.GetAxis("Vertical");
             map.LeftAxisHorizontal = Input.GetAxis("Horizontal");
             map.A = Input.GetButton("Fire1");
