@@ -80,13 +80,13 @@ public class MyBitStream
         int InvertMask = (Mask * -1 - 1);
 
         //First part of the byte
-        int num = (buffer[byteIndex] & InvertMask);
-        toReturn = (byte)((buffer[byteIndex] & InvertMask) >> bitIndex);
+        int num = (buffer[byteIndex] & Mask);
+        toReturn = (byte)((buffer[byteIndex] & Mask) >> bitIndex);
 
         byteIndex++;
 
         //Second Part
-        toReturn += (byte)((buffer[byteIndex] & Mask) >> (8 - bitIndex));
+        toReturn += (byte)((buffer[byteIndex] & InvertMask) >> (8 - bitIndex));
 
         return toReturn;
     }
