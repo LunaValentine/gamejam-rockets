@@ -60,19 +60,7 @@ public class GnetClient : MonoBehaviour
             {
                 uint packetNumber = BitConverter.ToUInt32(message, 4);
 
-                //If the message is more recent than the last we received then we should use it....
-
-
-
-
-                //TODO This is WRONG
-                //what the server does... not client
-                if (SequenceMoreRecent(BitConverter.ToUInt32(message, 4), LastReceived))
-                {
-                    byte[] buffer = new byte[message.Length - GnetBase.HeaderSize];
-                    Buffer.BlockCopy(message, GnetBase.HeaderSize, buffer, 0, buffer.Length);
-                    var map = new IoMap(buffer);
-                }
+                
             }
         }
     }

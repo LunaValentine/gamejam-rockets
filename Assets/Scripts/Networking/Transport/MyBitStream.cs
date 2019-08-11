@@ -17,9 +17,11 @@ public class MyBitStream
         buffer = new byte[size];
     }
 
-    public MyBitStream(byte[] buff)
+    public MyBitStream(byte[] buff, int index = 0)
     {
         buffer = buff;
+        writeByteIndex = index;
+        byteIndex = index;
     }
 
     public int BufferLength()
@@ -61,6 +63,31 @@ public class MyBitStream
     {
         byte[] bytes = ReadBytes(4);
         return BitConverter.ToSingle(bytes, 0);
+    }
+
+    public void PackVector3(Vector3 vect)
+    {
+        PackFloat(vect.x);
+        PackFloat(vect.y);
+        PackFloat(vect.z);
+    }
+
+    public Vector3 ReadVector3()
+    {
+        return new Vector3(ReadFloat(), ReadFloat(), ReadFloat());
+    }
+
+    public void PackQuaternion(Quaternion quat)
+    {
+        PackFloat(quat.x);
+        PackFloat(quat.y);
+        PackFloat(quat.z);
+        PackFloat(quat.w);
+    }
+
+    public Quaternion ReadQuaternion()
+    {
+        return new Quaternion(ReadFloat(), ReadFloat(), ReadFloat(), ReadFloat());
     }
 
     public byte[] ReadBytes(int number)
