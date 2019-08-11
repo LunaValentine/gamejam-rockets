@@ -6,13 +6,14 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-class GnetServer : MonoBehaviour
+public class GnetServer : MonoBehaviour
 {
     public Dictionary<IPEndPoint, uint> EndpointLastReceived = new Dictionary<IPEndPoint, uint>();
+    public Dictionary<IPEndPoint, InputHandler> PlayerInput = new Dictionary<IPEndPoint, InputHandler>();
+
+    public GameObject PlayerPrefab;
 
     private UdpClient ListenerClient;
-
-    public Action<EndPoint> NewConnectionReceived;
 
     public int ListenPort = 26234;
     public uint PacketNumber = 0;
@@ -20,7 +21,7 @@ class GnetServer : MonoBehaviour
     private byte[] message = new byte[1000];
     private int messageIndex = 0;
 
-    public GnetServer()
+    void OnEnable()
     {
         ListenerClient = new UdpClient(ListenPort);
     }
@@ -41,8 +42,7 @@ class GnetServer : MonoBehaviour
                 if (!EndpointLastReceived.ContainsKey(endpoint))
                 {
                     EndpointLastReceived.Add(endpoint, packetNumber - 1);
-                    if (NewConnectionReceived != null)
-                        NewConnectionReceived(endpoint);
+                    NewConnectionReceived(endpoint);
                 }
                 
                 //If the message is more recent than the last we received then we should use it.... Duplicate last input from client
@@ -81,18 +81,24 @@ class GnetServer : MonoBehaviour
         PacketNumber++;
     }
 
-    public void Close()
+    public void NewConnectionReceived(IPEndPoint endpoint)
     {
-        //Send TearDown to All EndPoints
-        ListenerClient.Close();
-        ListenerClient = null;
+        GameObject playerobj = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        InputHandler io = playerobj.GetComponent<InputHandler>();
+        PlayerInput.Add(endpoint, io);
     }
+
 
     public void Receive(IPEndPoint endpoint, Byte[] message)
     {
         EndpointLastReceived[endpoint] = BitConverter.ToUInt32(message, 4);
 
+        //Last thing acked? = BitConverter.ToUInt32(message, 8);
+
         //TODO process the actual Input
+        byte[] buffer = new byte[IoMap.Size];
+        Buffer.BlockCopy(message, 12, buffer, 0, IoMap.Size);
+        PlayerInput[endpoint].Push(new IoMap(buffer));
 
         //Push to Associated InputHandler
     }
@@ -100,5 +106,12 @@ class GnetServer : MonoBehaviour
     bool SequenceMoreRecent(uint s1, uint s2)
     {
         return (s1 > s2) && (s1 - s2 <= uint.MaxValue / 2) || (s2 > s1) && (s2 - s1 > uint.MaxValue / 2);
+    }
+
+    public void OnDisable()
+    {
+        //Send TearDown to All EndPoints
+        ListenerClient.Close();
+        ListenerClient = null;
     }
 }

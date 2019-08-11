@@ -6,8 +6,23 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-class GnetClient : MonoBehaviour
+public class GnetClient : MonoBehaviour
 {
+    private static GnetClient _instance;
+    public static GnetClient Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = UnityEngine.Object.FindObjectOfType<GnetClient>();
+            }
+            return _instance;
+        }
+    }
+
+    public GameObject PlayerPrefab;
+
     [Header("IP info (only available when not running)")]
     public int ServerPort;
     public string ServerIp;
@@ -22,13 +37,15 @@ class GnetClient : MonoBehaviour
     public uint PacketNumber = 0;
 
     private byte[] message = new byte[IoMap.Size + GnetBase.HeaderSize];
-    private int messageIndex = 0;
     public uint LastReceived = 0;
 
-    public GnetClient()
+    void OnEnable()
     {
         ListenerClient = new UdpClient(ListenPort);
         endpoint = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
+
+        //Create a player
+        Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
     public void ReceiveAll()
@@ -64,19 +81,19 @@ class GnetClient : MonoBehaviour
     {
         //0Protocol_Id, 4MessageNum, 8Acks
         //Protocol_ID
-        Buffer.BlockCopy(GnetBase.PROTOCOL_ID, 0, message, 0, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(GnetBase.PROTOCOL_ID), 0, message, 0, 4);
         //PacketNumber
-        Buffer.BlockCopy(PacketNumber, 0, message, 4, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(PacketNumber), 0, message, 4, 4);
         //LastReceived
-        Buffer.BlockCopy(LastReceived, 0, message, 8, 4);
+        Buffer.BlockCopy(BitConverter.GetBytes(LastReceived), 0, message, 8, 4);
 
         //Then the messageContents
         Buffer.BlockCopy(messageContents, 0, message, 12, messageContents.Length);
 
-        ListenerClient.Send(message, message.Length);
+        //ListenerClient.Send(message, message.Length, endpoint);
     }
 
-    public void Close()
+    public void OnDisable()
     {
         //Send TearDown to All EndPoints
         ListenerClient.Close();
@@ -99,6 +116,10 @@ class GnetClient : MonoBehaviour
     {
         //Pack the IoMap
         byte[] map = io.Pack();
+        Debug.Log(map[0] + " " + map[1] + " " + map[2] + " " + map[3]+ " " + map[4] + " " + map[5] + " " + map[6] + " " + map[7] + " " +
+            map[8] + " " + map[9] + " " + map[10] + " " + map[11] + " " + map[12] + " " + map[13] + " " + map[14] + " " + map[15] + " " +
+            map[16] + " " + map[17] + " " + map[18] + " " + map[19] + " " + map[20] + " " + map[21] + " " + map[22] + " " + map[23] + " " +
+            map[24] + " " + map[25]);
 
         //Send the Packet
         Send(map);

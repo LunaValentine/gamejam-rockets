@@ -6,13 +6,18 @@ public class InputHandler : MonoBehaviour
 {
     private IoMap _playerBuffer;
     public bool NoNetwork;
-    public ClientController client;
+    public GnetClient client;
 
     //If Client Controller exists and is enabled then we need to send input to server
 
     //If Server Controller Exists and is enabled then we need to receive from the server
 
     //This is where we take the Input from the InputManager and map it to the DataStructure
+
+    void OnEnable()
+    {
+        client = GnetClient.Instance;
+    }
 
     void FixedUpdate()
     {
@@ -34,7 +39,7 @@ public class InputHandler : MonoBehaviour
             }
             else
             {
-                //If client then send to server
+                client.Push(map);
             }
         }
     }

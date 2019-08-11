@@ -5,8 +5,8 @@ using UnityEngine;
 public struct IoMap
 {
     //If this file is ever updated then this value also needs to be updated....
-    //14 + 6*4 = 36
-    public static int Size = 36;
+    //4 + 6*4 = 36
+    public static int Size = 26;
 
     public bool A;
     public bool B;
@@ -82,10 +82,8 @@ public struct IoMap
         stream.PackBool(Right);
         stream.PackBool(Up);
         stream.PackBool(Down);
-
         stream.PackBool(LeftStick);
         stream.PackBool(RightStick);
-
         stream.PackBool(false);
         stream.PackBool(false);
 
