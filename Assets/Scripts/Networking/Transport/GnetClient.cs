@@ -44,12 +44,24 @@ public class GnetClient : MonoBehaviour
         ListenerClient = new UdpClient(ListenPort);
         endpoint = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
 
+        //I need a NetAggregator to function
+        if (NetAggregator.Instance == null)
+            gameObject.AddComponent<NetAggregator>();
+        if (!NetAggregator.Instance.enabled)
+            NetAggregator.Instance.enabled = true;
+
         //Create a player
         Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
+    private void FixedUpdate()
+    {
+        ReceiveAll();
+    }
+
     public void ReceiveAll()
     {
+        //Process All My Packets
         while (ListenerClient.Available > 0)
         {
             IPEndPoint ep = new IPEndPoint(IPAddress.Any, 0);
@@ -60,7 +72,9 @@ public class GnetClient : MonoBehaviour
             {
                 uint packetNumber = BitConverter.ToUInt32(message, 4);
 
-                
+                //If the message is more recent than the last we received then we should use it.... Duplicate last input from client
+                if (SequenceMoreRecent(BitConverter.ToUInt32(message, 4), LastReceived))
+                    Receive(endpoint, message);
             }
         }
     }
@@ -90,6 +104,9 @@ public class GnetClient : MonoBehaviour
 
     public void OnDisable()
     {
+        //Probably should do some graceful disconnect... but not right now?
+        //TODO
+
         //Send TearDown to All EndPoints
         ListenerClient.Close();
         ListenerClient = null;
@@ -97,9 +114,10 @@ public class GnetClient : MonoBehaviour
 
     public void Receive(IPEndPoint endpoint, Byte[] message)
     {
-        //EndpointLastReceived[endpoint] = BitConverter.ToUInt32(message, 4);
+        LastReceived = BitConverter.ToUInt32(message, 4);
 
-        //TODO process the actual Input
+        MyBitStream stream = new MyBitStream(message, GnetBase.HeaderSize);
+        NetAggregator.Instance.UnPackAll(stream);
     }
 
     bool SequenceMoreRecent(uint s1, uint s2)

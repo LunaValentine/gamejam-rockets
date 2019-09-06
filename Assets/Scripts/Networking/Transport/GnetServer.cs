@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class GnetServer : MonoBehaviour
 {
+    public static bool Server = false;
     public Dictionary<IPEndPoint, uint> EndpointLastReceived = new Dictionary<IPEndPoint, uint>();
     public Dictionary<IPEndPoint, InputHandler> PlayerInput = new Dictionary<IPEndPoint, InputHandler>();
 
@@ -21,9 +22,27 @@ public class GnetServer : MonoBehaviour
     private byte[] message = new byte[1000];
     private int messageIndex = 0;
 
+    private static GnetServer _instance;
+    public static GnetServer Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = UnityEngine.Object.FindObjectOfType<GnetServer>();
+            return _instance;
+        }
+    }
+
     void OnEnable()
     {
         ListenerClient = new UdpClient(ListenPort);
+
+        //Without a NetAggregator we don't actually send anything back to the clients
+        if (NetAggregator.Instance == null)
+            gameObject.AddComponent<NetAggregator>();
+        if (!NetAggregator.Instance.enabled)
+            NetAggregator.Instance.enabled = true;
+        Server = true;
     }
 
     void FixedUpdate()
@@ -57,10 +76,10 @@ public class GnetServer : MonoBehaviour
         }
     }
 
-    public void AddToPacket(MyBitStream stream)
+    public void AddToPacket(byte[] bytes)
     {
-        Buffer.BlockCopy(stream.GetUnderlyingArray(), 0, message, messageIndex, stream.BufferLength());
-        messageIndex += stream.BufferLength();
+        Buffer.BlockCopy(bytes, 0, message, messageIndex, bytes.Length);
+        messageIndex += bytes.Length;
     }
 
     public void StartPacket(MyBitStream stream)
@@ -90,6 +109,8 @@ public class GnetServer : MonoBehaviour
     {
         GameObject playerobj = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         InputHandler io = playerobj.GetComponent<InputHandler>();
+        NetBehaviour playerNet = playerobj.GetComponent<NetBehaviour>();
+        NetAggregator.Instance.PlayerObjs.Add(playerNet);
         PlayerInput.Add(endpoint, io);
     }
 
@@ -121,6 +142,9 @@ public class GnetServer : MonoBehaviour
 
     public void OnDisable()
     {
+        //Probably should do some graceful disconnect... but not right now?
+        //TODO
+
         //Send TearDown to All EndPoints
         ListenerClient.Close();
         ListenerClient = null;

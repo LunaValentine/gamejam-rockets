@@ -162,9 +162,4 @@ public class MyBitStream
             writeByteIndex++;
         }
     }
-
-    public byte[] getBytes()
-    {
-        return buffer;
-    }
 }

@@ -8,4 +8,6 @@ public static class GnetBase
     public const int HeaderSize = 12;
 
     public const int PROTOCOL_ID = 73629579;
+
+    public static IGnet Gnet;
 }

@@ -4,23 +4,18 @@ using UnityEngine;
 
 public abstract class NetBehaviour : MonoBehaviour
 {
-    public bool Server;
+    public static int PackedSize = sizeof(float) * (3 + 4 + 3);
 
-    private bool _fresh;
-    private Vector3 Velocity;
+    //Did I just get set this frame
+    private bool _fresh = true;
+
+    private Vector3 _velocity = Vector3.zero;
     //private Quaternion RotationalVelocity;
 
     // Use this for initialization
     void Awake()
     {
-        /* (ServerController.Instance == null)
-        {
-            enabled = false;
-        }
-        else
-        {
-            gameObject.AddComponent<NetSync>();
-        }*/
+
     }
 
     // Start is called before the first frame update
@@ -31,9 +26,12 @@ public abstract class NetBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(Server)
+        if(GnetServer.Server)
         {
+            var pastLocation = transform.position;
             ServerFixedUpdate();
+            //Update Velocity after we ServerUpdate
+            _velocity = transform.position - pastLocation;
         }
         else
         {
@@ -53,16 +51,27 @@ public abstract class NetBehaviour : MonoBehaviour
         }
         else
         {
-            transform.position += Velocity;
+            transform.position += _velocity;
         }
     }
 
-    protected void FreshPush(MyBitStream stream)
+    public void FreshPush(MyBitStream stream)
     {
         transform.position = stream.ReadVector3();
         transform.rotation = stream.ReadQuaternion();
 
-        Velocity = stream.ReadVector3();
+        _velocity = stream.ReadVector3();
         _fresh = true;
     }
+
+    public byte[] Pack()
+    {
+        MyBitStream stream = new MyBitStream(PackedSize); ;
+        stream.PackVector3(transform.position);
+        stream.PackQuaternion(transform.rotation);
+        stream.PackVector3(_velocity);
+
+        return stream.GetUnderlyingArray();
+    }
+
 }

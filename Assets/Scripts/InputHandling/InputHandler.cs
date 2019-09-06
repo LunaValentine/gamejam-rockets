@@ -5,7 +5,6 @@ using UnityEngine;
 public class InputHandler : MonoBehaviour
 {
     public IoMap _playerBuffer;
-    public int gotInput = 0;
     public bool NoNetwork;
     public GnetClient client = null;
 
@@ -47,7 +46,6 @@ public class InputHandler : MonoBehaviour
     public void Push(IoMap map)
     {
         _playerBuffer = map;
-        gotInput++;
     }
 
     public IoMap Poll()
